@@ -5,11 +5,10 @@ from player import Player
 
 class Level:
     def __init__(self, level_data, surface):
-
-        # установка уровня
         self.display_surface = surface
         self.setup_level(level_data)
         self.world_shift = 0
+        self.on_ground = True
 
     def setup_level(self, layout):
         self.tiles = pygame.sprite.Group()
@@ -27,7 +26,6 @@ class Level:
                     player_sprite = Player((x,y))
                     self.player.add(player_sprite)
 
-    # не работает правильно
     def scroll_x(self):
         player = self.player.sprite
         player_x = player.rect.centerx
@@ -63,9 +61,20 @@ class Level:
                 if player.direction.y > 0:
                     player.rect.bottom = sprite.rect.top
                     player.direction.y = 0
+                    # self.on_ground = True
                 elif player.direction.y < 0:
                     player.rect.top = sprite.rect.bottom
                     player.direction.y = 0
+                    # self.on_ground = False
+
+    def on_ground(self):
+        hits = pygame.sprite.spritecollide(self.player.sprite, self.tiles, False)
+        print(hits)
+        if hits:
+            return True
+        else:
+            return True
+
     def run(self):
 
         # level tiles
@@ -74,7 +83,7 @@ class Level:
         self.scroll_x()
 
         # player
-        self.player.update()
+        self.player.update(self.on_ground)
         self.horizontal_movement_collision()
         self.vertical_movement_collision()
         self.player.draw(self.display_surface)

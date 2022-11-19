@@ -7,23 +7,23 @@ class Player(pygame.sprite.Sprite):
         self.image.fill('red')
         self.rect = self.image.get_rect(topleft = pos)
         self.direction = pygame.math.Vector2(0, 0)
-        self.speed = 1
+        self.speed = 0.05
         self.gravity = 0.8
         self.jump_speed = -16
 
-    # доработать, сдвигается только на 1 пиксель при нажатии
-    def get_input(self):
+    def get_input(self, on_ground):
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_RIGHT]:
-            self.direction.x += 1
+            self.direction.x = 1
         elif keys[pygame.K_LEFT]:
-            self.direction.x += -1
+            self.direction.x = -1
         else:
             self.direction.x = 0
 
         if keys[pygame.K_UP]:
-            self.jump()
+            if on_ground:
+                self.jump()
 
 
     def apply_gravity(self):
@@ -33,5 +33,5 @@ class Player(pygame.sprite.Sprite):
     def jump(self):
         self.direction.y = self.jump_speed
 
-    def update(self):
-        self.get_input()
+    def update(self, on_ground):
+        self.get_input(on_ground)
