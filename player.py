@@ -47,7 +47,7 @@ class Player(pygame.sprite.Sprite):
         else:
             self.rect = self.image.get_rect(center = self.rect.center)
 
-    def get_input(self, on_ground):
+    def get_input(self):
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_RIGHT]:
@@ -60,7 +60,7 @@ class Player(pygame.sprite.Sprite):
             self.direction.x = 0
 
         if keys[pygame.K_UP]:
-            if on_ground:
+            if self.on_ground:
                 self.jump()
 
     def get_status(self):
@@ -81,7 +81,7 @@ class Player(pygame.sprite.Sprite):
     def jump(self):
         self.direction.y = self.jump_speed
 
-    def update(self, on_ground):
-        self.get_input(on_ground)
+    def update(self):
+        self.get_input()
         self.get_status()
         self.animate()

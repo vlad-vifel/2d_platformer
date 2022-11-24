@@ -72,13 +72,6 @@ class Level:
             player.on_ceiling = False
 
 
-    def on_ground(self):
-        hits = pygame.sprite.spritecollide(self.player.sprite, self.tiles, False)
-        print(hits)
-        if hits:
-            return True
-        else:
-            return True
 
     def run(self):
 
@@ -88,7 +81,7 @@ class Level:
         self.scroll_x()
 
         # player
-        self.player.update(self.on_ground)
+        self.player.update()
         self.horizontal_movement_collision()
         self.vertical_movement_collision()
         self.player.draw(self.display_surface)
