@@ -9,7 +9,7 @@ class Player(pygame.sprite.Sprite):
         self.image = self.animations['idle'][self.frame_index]
         self.rect = self.image.get_rect(topleft = pos)
         self.direction = pygame.math.Vector2(0, 0)
-        self.speed = 0.05
+        self.speed = 0.01
         self.gravity = 0.8
         self.jump_speed = -16
         self.status = 'idle'
@@ -20,7 +20,7 @@ class Player(pygame.sprite.Sprite):
         self.on_right = False
 
     def import_character_assets(self):
-        character_path = 'graphics/character/'
+        character_path = 'graphics/character0/'
         self.animations = {'idle': list, 'run': list, 'jump': list, 'fall': list}
 
         for animation in self.animations.keys():
