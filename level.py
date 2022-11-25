@@ -18,13 +18,37 @@ class Level:
             for col_index, cell in enumerate(row):
                 x = col_index * tile_size
                 y = row_index * tile_size
+
                 if cell == 'X':
-                    tile_sprite = Tile((x,y),tile_size)
+                    control = self.control_neighbours(layout, row_index, col_index)
+                    print('row ',row_index, ' col ',col_index, ' : ', control)
+                    print(len(layout))
+                    tile_sprite = Tile((x,y),tile_size, control)
                     self.tiles.add(tile_sprite)
 
                 if cell == 'P':
                     player_sprite = Player((x,y))
                     self.player.add(player_sprite)
+
+    def control_neighbours(self, layout, row_index, col_index):
+        if row_index - 1 < 0:
+            b_up = '1'
+        else:
+            b_up = '1' if layout[row_index - 1][col_index] == 'X' else '0'
+        if row_index + 1 >= len(layout):
+            b_down = '1'
+        else:
+            b_down = '1' if layout[row_index + 1][col_index] == 'X' else '0'
+        if col_index - 1 < 0:
+            b_left = '1'
+        else:
+            b_left = '1' if layout[row_index][col_index - 1] == 'X' else '0'
+        if col_index + 1 >= len(layout[row_index]):
+            b_right = '1'
+        else:
+            b_right = '1' if layout[row_index][col_index + 1] == 'X' else '0'
+
+        return b_up + b_down + b_left + b_right
 
     def scroll_x(self):
         player = self.player.sprite
