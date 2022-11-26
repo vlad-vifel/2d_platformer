@@ -14,7 +14,7 @@ while True:
             pygame.quit()
             sys.exit()
 
-    screen.fill('black')
+    screen.fill(pygame.color.THECOLORS['lightblue1'])
     level.run()
 
     pygame.display.update()
