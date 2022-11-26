@@ -28,7 +28,7 @@ class Tile(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft = pos)
 
     def set_tile(self, control):
-        path = 'graphics/tileset/'
+        path = 'graphics/tileset1/'
 
 
         tile = self.tiles[control]

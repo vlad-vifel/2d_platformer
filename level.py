@@ -21,8 +21,6 @@ class Level:
 
                 if cell == 'X':
                     control = self.control_neighbours(layout, row_index, col_index)
-                    print('row ',row_index, ' col ',col_index, ' : ', control)
-                    print(len(layout))
                     tile_sprite = Tile((x,y),tile_size, control)
                     self.tiles.add(tile_sprite)
 
