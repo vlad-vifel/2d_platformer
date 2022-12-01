@@ -2,6 +2,7 @@ import pygame
 from tiles import Tile
 from settings import tile_size, screen_width
 from player import Player
+from enemy import Enemy
 
 class Level:
     def __init__(self, level_data, surface):
@@ -13,6 +14,7 @@ class Level:
     def setup_level(self, layout):
         self.tiles = pygame.sprite.Group()
         self.player = pygame.sprite.GroupSingle()
+        # self.enemy = pygame.sprite.Group()
 
         for row_index, row in enumerate(layout):
             for col_index, cell in enumerate(row):
@@ -27,6 +29,10 @@ class Level:
                 if cell == 'P':
                     player_sprite = Player((x,y))
                     self.player.add(player_sprite)
+
+                # if cell == 'E':
+                #     enemy_sprite = Enemy(tile_size, x, y)
+                #     self.enemy.add(enemy_sprite)
 
     def control_neighbours(self, layout, row_index, col_index):
         if row_index - 1 < 0:
@@ -47,6 +53,7 @@ class Level:
             b_right = '1' if layout[row_index][col_index + 1] == 'X' else '0'
 
         return b_up + b_down + b_left + b_right
+
 
     def scroll_x(self):
         player = self.player.sprite
@@ -93,7 +100,19 @@ class Level:
         if player.on_ceiling and player.direction.y > 0:
             player.on_ceiling = False
 
-
+    # def enemy_horizontal_movement_collision(self):
+    #     enemy = self.enemy.sprite
+    #     enemy.rect.x += enemy.speed
+    #
+    #     for sprite in self.tiles.sprites():
+    #         if sprite.rect.colliderect(enemy.rect):
+    #             if enemy.speed < 0:
+    #                 enemy.rect.left = sprite.rect.right
+    #
+    #             elif enemy.speed > 0:
+    #                 enemy.rect.right = sprite.rect.left
+    #             enemy.reverse()
+    #             enemy.reverse_image()
 
     def run(self):
 
@@ -107,3 +126,7 @@ class Level:
         self.horizontal_movement_collision()
         self.vertical_movement_collision()
         self.player.draw(self.display_surface)
+
+        # enemy
+        # self.enemy.update()
+        # self.enemy.draw(self.display_surface)
