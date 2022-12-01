@@ -1,7 +1,12 @@
 import pygame
 from support import import_folder
 class Player(pygame.sprite.Sprite):
-    def __init__(self, pos):
+
+    def __init__(self, pos: list):
+        """ Инициализация игрока
+
+        :param pos (list): начальные координаты игрока
+        """
         super().__init__()
         self.import_character_assets()
         self.frame_index = 0
