@@ -1,18 +1,22 @@
-import pygame
-from tiles import Tile
+import pygame, random
+from tiles import Tile, Grass
 from settings import tile_size, screen_width
 from player import Player
 from enemy import Enemy
 
 class Level:
-    def __init__(self, level_data, surface):
+    def __init__(self, level_data, surface, font):
         self.display_surface = surface
         self.setup_level(level_data)
         self.world_shift = 0
         self.on_ground = True
+        self.gameover = False
+        self.lives = 100000
+        self.font = font
 
     def setup_level(self, layout):
         self.tiles = pygame.sprite.Group()
+        self.grass = pygame.sprite.Group()
         self.player = pygame.sprite.GroupSingle()
         # self.enemy = pygame.sprite.Group()
 
@@ -23,8 +27,16 @@ class Level:
 
                 if cell == 'X':
                     control = self.control_neighbours(layout, row_index, col_index)
-                    tile_sprite = Tile((x,y),tile_size, control)
+                    tile_sprite = Tile((x,y), control)
                     self.tiles.add(tile_sprite)
+
+                if cell == 'G':
+                    grass_sprite = Grass((x, y), random.randint(0,2))
+                    self.grass.add(grass_sprite)
+
+                if cell == 'K':
+                    grass_sprite = Grass((x, y), 3)
+                    self.grass.add(grass_sprite)
 
                 if cell == 'P':
                     player_sprite = Player((x,y))
@@ -35,22 +47,22 @@ class Level:
                 #     self.enemy.add(enemy_sprite)
 
     def control_neighbours(self, layout, row_index, col_index):
-        if row_index - 1 < 0:
+        if row_index - 1 < 0 or layout[row_index - 1][col_index] == 'X':
             b_up = '1'
         else:
-            b_up = '1' if layout[row_index - 1][col_index] == 'X' else '0'
-        if row_index + 1 >= len(layout):
+            b_up = '0'
+        if row_index + 1 >= len(layout) or layout[row_index + 1][col_index] == 'X':
             b_down = '1'
         else:
-            b_down = '1' if layout[row_index + 1][col_index] == 'X' else '0'
-        if col_index - 1 < 0:
+            b_down = '0'
+        if col_index - 1 < 0 or layout[row_index][col_index - 1] == 'X':
             b_left = '1'
         else:
-            b_left = '1' if layout[row_index][col_index - 1] == 'X' else '0'
-        if col_index + 1 >= len(layout[row_index]):
+            b_left = '0'
+        if col_index + 1 >= len(layout[row_index]) or layout[row_index][col_index + 1] == 'X':
             b_right = '1'
         else:
-            b_right = '1' if layout[row_index][col_index + 1] == 'X' else '0'
+            b_right = '0'
 
         return b_up + b_down + b_left + b_right
 
@@ -113,7 +125,11 @@ class Level:
     #                 enemy.rect.right = sprite.rect.left
     #             enemy.reverse()
     #             enemy.reverse_image()
-
+    def show_lives(self, surf):
+        lives = self.font.render("Lives: " + str(self.player_lives), True, (255, 255, 255))
+        lives_rect = lives.get_rect()
+        lives_rect.topleft = (10, 10)
+        surf.blit(lives, lives_rect)
     def run(self):
 
         # level tiles
@@ -121,12 +137,27 @@ class Level:
         self.tiles.draw(self.display_surface)
         self.scroll_x()
 
+        # level grass
+        self.grass.update(self.world_shift)
+        self.grass.draw(self.display_surface)
+        self.scroll_x()
+
         # player
+        self.gameover = self.player.sprite.get_death()
+        self.player_lives = self.player.sprite.get_lives()
+
         self.player.update()
         self.horizontal_movement_collision()
         self.vertical_movement_collision()
         self.player.draw(self.display_surface)
 
+        self.show_lives(self.display_surface)
+
+
+
+
+
         # enemy
         # self.enemy.update()
         # self.enemy.draw(self.display_surface)
+
