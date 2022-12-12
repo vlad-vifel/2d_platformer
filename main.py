@@ -10,9 +10,11 @@ clock = pygame.time.Clock()
 
 ARIAL_50 = font.SysFont('arial', 50)
 
-# pygame.mixer.init()
-# pygame.mixer.music.load("music/main.ogg")
-# pygame.mixer.music.play(-1)
+pygame.mixer.init()
+pygame.mixer.music.load("music/monkee.mp3")
+pygame.mixer.music.set_volume(0.15)
+pygame.mixer.music.play(-1)
+
 def switch_scene(scene):
     global current_scene
     current_scene = scene
@@ -90,7 +92,7 @@ def game(level_map, lives, current_checkpoint):
 
 
 main_menu = Menu(ARIAL_50)
-main_menu.append_option('Start', lambda: game(level_map1, 3, 0))
+main_menu.append_option('Start', lambda: game(level_map1, 3, 1))
 main_menu.append_option('Levels', levels)
 main_menu.append_option('Quit', quit)
 
