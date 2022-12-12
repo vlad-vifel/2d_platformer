@@ -9,6 +9,10 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 clock = pygame.time.Clock()
 
 ARIAL_50 = font.SysFont('arial', 50)
+
+# pygame.mixer.init()
+# pygame.mixer.music.load("music/main.ogg")
+# pygame.mixer.music.play(-1)
 def switch_scene(scene):
     global current_scene
     current_scene = scene
@@ -27,7 +31,7 @@ def menu():
                 if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
                     switch_scene(main_menu.select())
         screen.fill(pygame.color.THECOLORS['black'])
-        main_menu.draw(screen, 500, 200, 100)
+        main_menu.draw(screen, 500, 250, 100)
         pygame.display.update()
 
 def levels():
@@ -45,9 +49,22 @@ def levels():
                 if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
                     switch_scene(level_menu.select())
         screen.fill(pygame.color.THECOLORS['black'])
-        level_menu.draw(screen, 500, 200, 100)
+        level_menu.draw(screen, 500, 250, 100)
         pygame.display.update()
 
+def game_over():
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
+                    switch_scene(gameover_message.select())
+        screen.fill(pygame.color.THECOLORS['black'])
+        gameover_message.draw(screen, 500, 400, 100)
+        pygame.display.update()
 def game(level_map):
     level = Level(level_map, screen, ARIAL_50)
     running = True
@@ -61,7 +78,7 @@ def game(level_map):
                     switch_scene(menu())
 
         if level.gameover:
-            switch_scene(menu())
+            switch_scene(game_over())
 
         screen.fill(pygame.color.THECOLORS['lightblue1'])
         level.run()
@@ -78,6 +95,9 @@ level_menu = Menu(ARIAL_50)
 level_menu.append_option('Level 1', lambda: game(level_map1))
 level_menu.append_option('Level 2', lambda: game(level_map2))
 level_menu.append_option('Back', menu)
+
+gameover_message = Menu(ARIAL_50)
+gameover_message.append_option('Game Over', menu)
 
 switch_scene(menu())
 while current_scene is not None:
