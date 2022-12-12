@@ -65,8 +65,8 @@ def game_over():
         screen.fill(pygame.color.THECOLORS['black'])
         gameover_message.draw(screen, 500, 400, 100)
         pygame.display.update()
-def game(level_map):
-    level = Level(level_map, screen, ARIAL_50)
+def game(level_map, lives):
+    level = Level(level_map, screen, ARIAL_50, lives)
     running = True
     while running:
         for event in pygame.event.get():
@@ -76,6 +76,9 @@ def game(level_map):
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     switch_scene(menu())
+
+        if level.is_falling_death:
+            switch_scene(game(level_map, lives - 1))
 
         if level.gameover:
             switch_scene(game_over())
@@ -87,13 +90,13 @@ def game(level_map):
 
 
 main_menu = Menu(ARIAL_50)
-main_menu.append_option('Start', lambda: game(level_map1))
+main_menu.append_option('Start', lambda: game(level_map1, 3))
 main_menu.append_option('Levels', levels)
 main_menu.append_option('Quit', quit)
 
 level_menu = Menu(ARIAL_50)
-level_menu.append_option('Level 1', lambda: game(level_map1))
-level_menu.append_option('Level 2', lambda: game(level_map2))
+level_menu.append_option('Level 1', lambda: game(level_map1, 3))
+level_menu.append_option('Level 2', lambda: game(level_map2, 3))
 level_menu.append_option('Back', menu)
 
 gameover_message = Menu(ARIAL_50)

@@ -28,5 +28,4 @@ level_map2 = [
 
 tile_size = 80
 screen_width = 1200
-# ARIAL_50 = font.SysFont('arial', 50)
 screen_height = len(level_map1) * tile_size

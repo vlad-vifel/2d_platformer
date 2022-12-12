@@ -2,7 +2,7 @@ import pygame
 from support import import_folder
 class Player(pygame.sprite.Sprite):
 
-    def __init__(self, pos: list):
+    def __init__(self, pos: list, lives):
         """ Инициализация игрока
 
         :param pos (list): начальные координаты игрока
@@ -23,7 +23,7 @@ class Player(pygame.sprite.Sprite):
         self.on_ceiling = False
         self.on_left = False
         self.on_right = False
-        self.lives = 100
+        self.lives = lives
 
     def import_character_assets(self):
         character_path = 'graphics/character0/'
@@ -69,9 +69,6 @@ class Player(pygame.sprite.Sprite):
             if self.on_ground:
                 self.jump()
 
-        if keys[pygame.K_q]:
-            self.damage(1)
-
     def get_status(self):
         if self.direction.y < 0:
             self.status = 'jump'
@@ -89,9 +86,6 @@ class Player(pygame.sprite.Sprite):
 
     def jump(self):
         self.direction.y = self.jump_speed
-
-    def damage(self, dmg):
-        self.lives -= dmg
 
     def get_death(self):
         return True if self.lives <= 0 else False

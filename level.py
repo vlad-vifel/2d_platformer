@@ -1,18 +1,20 @@
 import pygame, random
 from tiles import Tile, Grass
-from settings import tile_size, screen_width
+from settings import *
 from player import Player
 from enemy import Enemy
 
 class Level:
-    def __init__(self, level_data, surface, font):
+    def __init__(self, level_data, surface, font, lives):
         self.display_surface = surface
-        self.setup_level(level_data)
         self.world_shift = 0
         self.on_ground = True
         self.gameover = False
-        self.lives = 100000
+        self.is_falling_death = False
+        self.player_lives = lives
         self.font = font
+
+        self.setup_level(level_data)
 
     def setup_level(self, layout):
         self.tiles = pygame.sprite.Group()
@@ -39,7 +41,7 @@ class Level:
                     self.grass.add(grass_sprite)
 
                 if cell == 'P':
-                    player_sprite = Player((x,y))
+                    player_sprite = Player((x, y), self.player_lives)
                     self.player.add(player_sprite)
 
                 # if cell == 'E':
@@ -112,6 +114,14 @@ class Level:
         if player.on_ceiling and player.direction.y > 0:
             player.on_ceiling = False
 
+    def falling_death(self):
+        player = self.player.sprite
+
+        if player.rect.y > screen_height + tile_size * 3:
+            return True
+        else:
+            return False
+
     # def enemy_horizontal_movement_collision(self):
     #     enemy = self.enemy.sprite
     #     enemy.rect.x += enemy.speed
@@ -130,6 +140,7 @@ class Level:
         lives_rect = lives.get_rect()
         lives_rect.topleft = (10, 10)
         surf.blit(lives, lives_rect)
+
     def run(self):
 
         # level tiles
@@ -144,7 +155,7 @@ class Level:
 
         # player
         self.gameover = self.player.sprite.get_death()
-        self.player_lives = self.player.sprite.get_lives()
+        self.is_falling_death = self.falling_death()
 
         self.player.update()
         self.horizontal_movement_collision()
