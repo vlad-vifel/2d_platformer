@@ -1,29 +1,29 @@
 from pygame import font
 
 level_map1 = [
-    'XXXXX                           ',
-    'XKXXX                           ',
-    'XXXKX         GG                ',
-    'XXXXXG XX P  XXXX         XX    ',
-    'XXKXXXXXX           G           ',
-    'XXXXXXXXXXX        XXX       XX ',
-    'XKXXX  XXXX   GKKGXX       G    ',
-    'XXXXX  XX    XXXXXXX   XX XX    ',
-    'XXXKX      G XX XXXX   XX XXX   ',
-    'XXXXX   KKXXXXX XXXXXX XX XXXX  ',
-    'XXXXX  XXXXXXXX XXXXXX XX XXXX  ']
+    'XXXXX                             ',
+    'XXXXX         G                   ',
+    'XXXXX       XXXXX           P     ',
+    'X XXXG XX            G     XXX    ',
+    'XXXXXXXXXP        XXXX            ',
+    'XXXXXXXXXXX       XXXX        XXXX',
+    'XXXXX  XXXX   GG  XX        G     ',
+    'XXXXX  XX    XXXXXXX       XX     ',
+    'XXX X      G XXXXXXX   XX  XXX    ',
+    'XXXXX     XXXXX XXXXXX XX  XXXX   ',
+    'XXXXX  XXXXXXXX XXXXXX XX  XXXX  X']
 
 level_map2 = [
     'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
-    'XKXXX                           ',
-    'XXXKX         GG                ',
+    'X XXX                           ',
+    'XXX X         GG                ',
     'XXXXXG XX P  XXXX         XX    ',
-    'XXKXXXXXX           G           ',
+    'XX XXXXXX           G           ',
     'XXXXXXXXXXX        XXX       XX ',
-    'XKXXX  XXXX   GKKGXX       G    ',
+    'X XXX  XXXX   G  GXX       G    ',
     'XXXXX  XX    XXXXXXX   XX XX    ',
-    'XXXKX      G XX XXXX   XX XXX   ',
-    'XXXXX   KKXXXXX XXXXXX XX XXXX  ',
+    'XXX X      G XX XXXX   XX XXX   ',
+    'XXXXX     XXXXX XXXXXX XX XXXX  ',
     'XXXXX  XXXXXXXX XXXXXX XX XXXX  ']
 
 tile_size = 80

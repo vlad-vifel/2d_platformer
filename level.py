@@ -2,10 +2,10 @@ import pygame, random
 from tiles import Tile, Grass
 from settings import *
 from player import Player
-from enemy import Enemy
+# from enemy import Enemy
 
 class Level:
-    def __init__(self, level_data, surface, font, lives):
+    def __init__(self, level_data, surface, font, lives, current_checkpoint):
         self.display_surface = surface
         self.world_shift = 0
         self.on_ground = True
@@ -13,6 +13,8 @@ class Level:
         self.is_falling_death = False
         self.player_lives = lives
         self.font = font
+        self.current_checkpoint = current_checkpoint
+        self.checkpoints = []
 
         self.setup_level(level_data)
 
@@ -36,17 +38,29 @@ class Level:
                     grass_sprite = Grass((x, y), random.randint(0,2))
                     self.grass.add(grass_sprite)
 
-                if cell == 'K':
+
+                if cell == 'P':
+                    self.checkpoints.append((x, y))
+
                     grass_sprite = Grass((x, y), 3)
                     self.grass.add(grass_sprite)
 
-                if cell == 'P':
-                    player_sprite = Player((x, y), self.player_lives)
-                    self.player.add(player_sprite)
 
                 # if cell == 'E':
                 #     enemy_sprite = Enemy(tile_size, x, y)
                 #     self.enemy.add(enemy_sprite)
+
+        self.checkpoints = sorted(self.checkpoints, key = lambda i: i[0])
+
+        print(self.checkpoints[self.current_checkpoint][0] - (screen_width / 4))
+        self.tiles.update((screen_width / 4) - self.checkpoints[self.current_checkpoint][0])
+        self.grass.update((screen_width / 4) - self.checkpoints[self.current_checkpoint][0])
+
+        y_player = self.checkpoints[self.current_checkpoint][1]
+        x_player = (screen_width / 4)
+        player_sprite = Player((x_player, y_player), self.player_lives)
+        self.player.add(player_sprite)
+
 
     def control_neighbours(self, layout, row_index, col_index):
         if row_index - 1 < 0 or layout[row_index - 1][col_index] == 'X':
@@ -117,7 +131,7 @@ class Level:
     def falling_death(self):
         player = self.player.sprite
 
-        if player.rect.y > screen_height + tile_size * 3:
+        if player.rect.y > screen_height + tile_size * 6:
             return True
         else:
             return False
