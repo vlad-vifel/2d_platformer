@@ -34,6 +34,7 @@ class Tile(pygame.sprite.Sprite):
 
     def update(self, x_shift):
         self.rect.x += x_shift
+
 class Grass(pygame.sprite.Sprite):
     def __init__(self, pos, type):
         super().__init__()

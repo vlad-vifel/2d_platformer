@@ -24,6 +24,7 @@ class Player(pygame.sprite.Sprite):
         self.on_left = False
         self.on_right = False
         self.lives = lives
+        self.moving = False
 
     def import_character_assets(self):
         character_path = 'graphics/character0/'
@@ -59,11 +60,14 @@ class Player(pygame.sprite.Sprite):
         if keys[pygame.K_RIGHT]:
             self.direction.x = 1
             self.facing_right = True
+            self.moving = True
         elif keys[pygame.K_LEFT]:
             self.direction.x = -1
             self.facing_right = False
+            self.moving = True
         else:
             self.direction.x = 0
+            self.moving = False
 
         if keys[pygame.K_UP]:
             if self.on_ground:

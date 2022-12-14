@@ -15,6 +15,10 @@ class Level:
         self.font = font
         self.current_checkpoint = current_checkpoint
         self.checkpoints = []
+        self.player_coordinates = (0, 0)
+        self.spawn_coordinates = (0, 0)
+        self.colliding = False
+        self.was_scrolled = False
 
         self.setup_level(level_data)
 
@@ -38,10 +42,8 @@ class Level:
                     grass_sprite = Grass((x, y), random.randint(0,2))
                     self.grass.add(grass_sprite)
 
-
                 if cell == 'P':
                     self.checkpoints.append((x, y))
-
                     grass_sprite = Grass((x, y), 3)
                     self.grass.add(grass_sprite)
 
@@ -50,17 +52,17 @@ class Level:
                 #     enemy_sprite = Enemy(tile_size, x, y)
                 #     self.enemy.add(enemy_sprite)
 
-        self.checkpoints = sorted(self.checkpoints, key = lambda i: i[0])
+        self.checkpoints = sorted(self.checkpoints, key = lambda i: (i[0], i[1]))
 
-        print(self.checkpoints[self.current_checkpoint][0] - (screen_width / 4))
         self.tiles.update((screen_width / 4) - self.checkpoints[self.current_checkpoint][0])
         self.grass.update((screen_width / 4) - self.checkpoints[self.current_checkpoint][0])
 
+        x_player = self.checkpoints[self.current_checkpoint][0]
         y_player = self.checkpoints[self.current_checkpoint][1]
-        x_player = (screen_width / 4)
-        player_sprite = Player((x_player, y_player), self.player_lives)
-        self.player.add(player_sprite)
+        self.player_coordinates = (x_player, y_player)
 
+        player_sprite = Player((screen_width / 4, y_player), self.player_lives)
+        self.player.add(player_sprite)
 
     def control_neighbours(self, layout, row_index, col_index):
         if row_index - 1 < 0 or layout[row_index - 1][col_index] == 'X':
@@ -85,29 +87,75 @@ class Level:
 
     def scroll_x(self):
         player = self.player.sprite
-        player_x = player.rect.centerx
+        player_x = player.rect.x
         direction_x = player.direction.x
 
         if player_x < screen_width / 4 and direction_x < 0:
             self.world_shift = 8
             player.speed = 0
-        elif player_x > screen_width - (screen_width / 4) and direction_x > 0:
+            self.was_scrolled = True
+            if player.moving and not self.colliding:
+                x_global = self.player_coordinates[0] - self.world_shift / 2
+            else:
+                x_global = self.player_coordinates[0]
+
+            if not self.was_scrolled:
+                x_global += 8 * direction_x
+
+            self.was_scrolled = True
+
+        elif player_x + tile_size > screen_width - (screen_width / 4) and direction_x > 0:
             self.world_shift = -8
             player.speed = 0
+            if player.moving and not self.colliding:
+                x_global = self.player_coordinates[0] - self.world_shift / 2
+            else:
+                x_global = self.player_coordinates[0]
+
+            if not self.was_scrolled:
+                x_global += 8 * direction_x
+
+            self.was_scrolled = True
+
         else:
             self.world_shift = 0
             player.speed = 8
+            if player.moving and not self.colliding:
+                x_global = self.player_coordinates[0] + (player.speed * direction_x) / 2
+            else:
+                x_global = self.player_coordinates[0]
 
+            if self.was_scrolled:
+                x_global -= 8 * direction_x
+
+            self.was_scrolled = False
+
+
+
+        y_global = player.rect.y
+        self.player_coordinates = (x_global, y_global)
+
+        print(self.player_coordinates, self.world_shift, player.speed * direction_x, (-self.world_shift + player.speed * direction_x) / 2, self.colliding)
     def horizontal_movement_collision(self):
         player = self.player.sprite
         player.rect.x += player.direction.x * player.speed
 
+        collision_counter = 0
+
         for sprite in self.tiles.sprites():
             if sprite.rect.colliderect(player.rect):
+                collision_counter += 1
                 if player.direction.x < 0:
                     player.rect.left = sprite.rect.right
                 elif player.direction.x > 0:
                     player.rect.right = sprite.rect.left
+
+        if collision_counter > 0:
+            self.colliding = True
+        else:
+            self.colliding = False
+
+
 
     def vertical_movement_collision(self):
         player = self.player.sprite
