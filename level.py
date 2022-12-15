@@ -2,7 +2,7 @@ import pygame, random
 from tiles import Tile, Grass
 from settings import *
 from player import Player
-# from enemy import Enemy
+
 
 class Level:
     def __init__(self, level_data, surface, font, lives, current_checkpoint):
@@ -18,7 +18,11 @@ class Level:
         self.player_coordinates = (0, 0)
         self.spawn_coordinates = (0, 0)
         self.colliding = False
-        self.was_scrolled = False
+        self.was_scrolled = 0
+        self.sum_left = 0
+        self.sum_right = 0
+        self.border_left = screen_width / 4
+        self.border_right = screen_width - (screen_width / 4) - player_size - 8
 
         self.setup_level(level_data)
 
@@ -48,10 +52,6 @@ class Level:
                     self.grass.add(grass_sprite)
 
 
-                # if cell == 'E':
-                #     enemy_sprite = Enemy(tile_size, x, y)
-                #     self.enemy.add(enemy_sprite)
-
         self.checkpoints = sorted(self.checkpoints, key = lambda i: (i[0], i[1]))
 
         self.tiles.update((screen_width / 4) - self.checkpoints[self.current_checkpoint][0])
@@ -61,8 +61,10 @@ class Level:
         y_player = self.checkpoints[self.current_checkpoint][1]
         self.player_coordinates = (x_player, y_player)
 
-        player_sprite = Player((screen_width / 4, y_player), self.player_lives)
+        player_sprite = Player((self.border_left, y_player), self.player_lives)
         self.player.add(player_sprite)
+
+        print(self.checkpoints)
 
     def control_neighbours(self, layout, row_index, col_index):
         if row_index - 1 < 0 or layout[row_index - 1][col_index] == 'X':
@@ -90,52 +92,42 @@ class Level:
         player_x = player.rect.x
         direction_x = player.direction.x
 
-        if player_x < screen_width / 4 and direction_x < 0:
+
+        if player_x < self.border_left and direction_x < 0:
             self.world_shift = 8
             player.speed = 0
-            self.was_scrolled = True
+            player.rect.x = self.border_left
+
             if player.moving and not self.colliding:
                 x_global = self.player_coordinates[0] - self.world_shift / 2
             else:
                 x_global = self.player_coordinates[0]
 
-            if not self.was_scrolled:
-                x_global += 8 * direction_x
 
-            self.was_scrolled = True
-
-        elif player_x + tile_size > screen_width - (screen_width / 4) and direction_x > 0:
+        elif player_x > self.border_right and direction_x > 0:
             self.world_shift = -8
             player.speed = 0
+            player.rect.x = self.border_right
             if player.moving and not self.colliding:
                 x_global = self.player_coordinates[0] - self.world_shift / 2
             else:
                 x_global = self.player_coordinates[0]
 
-            if not self.was_scrolled:
-                x_global += 8 * direction_x
 
-            self.was_scrolled = True
 
         else:
             self.world_shift = 0
             player.speed = 8
             if player.moving and not self.colliding:
                 x_global = self.player_coordinates[0] + (player.speed * direction_x) / 2
+
             else:
                 x_global = self.player_coordinates[0]
-
-            if self.was_scrolled:
-                x_global -= 8 * direction_x
-
-            self.was_scrolled = False
-
 
 
         y_global = player.rect.y
         self.player_coordinates = (x_global, y_global)
 
-        print(self.player_coordinates, self.world_shift, player.speed * direction_x, (-self.world_shift + player.speed * direction_x) / 2, self.colliding)
     def horizontal_movement_collision(self):
         player = self.player.sprite
         player.rect.x += player.direction.x * player.speed
@@ -176,6 +168,21 @@ class Level:
         if player.on_ceiling and player.direction.y > 0:
             player.on_ceiling = False
 
+    def set_checkpoint(self):
+        x_player = self.player_coordinates[0]
+        y_player = self.player_coordinates[1]
+
+        print(self.player_coordinates)
+
+        for i in range(self.current_checkpoint + 1, len(self.checkpoints)):
+            x_checkpoint = self.checkpoints[i][0]
+            y_checkpoint = self.checkpoints[i][1]
+
+
+            if x_checkpoint - player_size < x_player < x_checkpoint + tile_size and y_checkpoint < y_player < y_checkpoint + tile_size:
+                print('!')
+                self.current_checkpoint = i
+
     def falling_death(self):
         player = self.player.sprite
 
@@ -184,19 +191,6 @@ class Level:
         else:
             return False
 
-    # def enemy_horizontal_movement_collision(self):
-    #     enemy = self.enemy.sprite
-    #     enemy.rect.x += enemy.speed
-    #
-    #     for sprite in self.tiles.sprites():
-    #         if sprite.rect.colliderect(enemy.rect):
-    #             if enemy.speed < 0:
-    #                 enemy.rect.left = sprite.rect.right
-    #
-    #             elif enemy.speed > 0:
-    #                 enemy.rect.right = sprite.rect.left
-    #             enemy.reverse()
-    #             enemy.reverse_image()
     def show_lives(self, surf):
         lives = self.font.render("Lives: " + str(self.player_lives), True, (255, 255, 255))
         lives_rect = lives.get_rect()
@@ -206,14 +200,17 @@ class Level:
     def run(self):
 
         # level tiles
-        self.tiles.update(self.world_shift)
         self.tiles.draw(self.display_surface)
         self.scroll_x()
+        self.tiles.update(self.world_shift)
 
         # level grass
-        self.grass.update(self.world_shift)
         self.grass.draw(self.display_surface)
+        self.grass.update(self.world_shift)
         self.scroll_x()
+
+        self.set_checkpoint()
+
 
         # player
         self.gameover = self.player.sprite.get_death()
@@ -226,11 +223,4 @@ class Level:
 
         self.show_lives(self.display_surface)
 
-
-
-
-
-        # enemy
-        # self.enemy.update()
-        # self.enemy.draw(self.display_surface)
-
+        # pygame.draw.rect(self.display_surface, pygame.color.THECOLORS['black'], ((screen_width / 4), 0, screen_width - 2*(screen_width / 4), screen_height), 1)

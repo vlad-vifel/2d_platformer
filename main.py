@@ -3,12 +3,13 @@ from settings import *
 from level import Level
 from menu import Menu
 
+
 pygame.init()
 pygame.font.init()
 screen = pygame.display.set_mode((screen_width, screen_height))
 clock = pygame.time.Clock()
 
-ARIAL_50 = font.SysFont('arial', 50)
+ARIAL_50 = pygame.font.SysFont('arial', 50)
 
 pygame.mixer.init()
 pygame.mixer.music.load("music/main.mp3")
@@ -33,7 +34,7 @@ def menu():
                 if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
                     switch_scene(main_menu.select())
         screen.fill(pygame.color.THECOLORS['black'])
-        main_menu.draw(screen, 500, 250, 100)
+        main_menu.draw(screen, 0, 250, 100)
         pygame.display.update()
 
 def music():
@@ -51,7 +52,7 @@ def music():
                 if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
                     switch_scene(music_menu.select())
         screen.fill(pygame.color.THECOLORS['black'])
-        music_menu.draw(screen, 500, 250, 100)
+        music_menu.draw(screen, 0, 250, 100)
         pygame.display.update()
 
 def change_music_volume(vol):
@@ -78,7 +79,7 @@ def levels():
                 if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
                     switch_scene(level_menu.select())
         screen.fill(pygame.color.THECOLORS['black'])
-        level_menu.draw(screen, 500, 250, 100)
+        level_menu.draw(screen, 0, 250, 100)
         pygame.display.update()
 
 def game_over():
@@ -92,7 +93,7 @@ def game_over():
                 if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
                     switch_scene(gameover_message.select())
         screen.fill(pygame.color.THECOLORS['black'])
-        gameover_message.draw(screen, 500, 400, 100)
+        gameover_message.draw(screen, 0, 400, 100)
         pygame.display.update()
 
 def game(level_map, lives, current_checkpoint):
@@ -116,7 +117,7 @@ def game(level_map, lives, current_checkpoint):
         screen.fill(pygame.color.THECOLORS['lightblue1'])
         level.run()
         pygame.display.update()
-        clock.tick(30)
+        clock.tick(60)
 
 main_menu = Menu(ARIAL_50)
 main_menu.append_option('Start', lambda: game(level_map1, 3, 0))

@@ -1,10 +1,21 @@
-from pygame import font
+
+level_map10 = [
+    '                    ',
+    '                    ',
+    '                    ',
+    '                    ',
+    '                    ',
+    '                    ',
+    '                    ',
+    '                    ',
+    'XP X  X            X',
+    'XXXXXXXXXXXXXXXXXXXX']
 
 level_map1 = [
     'XXXXX                             ',
     'XXXXX         G                   ',
     'XXXXX       XXXXX           P     ',
-    'X    P               G     XXX    ',
+    'X     P   P          G     XXX    ',
     'XXXXXXXX  X       XXXX            ',
     'XXXXXXXXXXX       XXXX        XXXX',
     'XXXXX  XXXX   GG  XX        G     ',
@@ -26,6 +37,7 @@ level_map2 = [
     'XXXXX     XXXXX XXXXXX XX XXXX  ',
     'XXXXX  XXXXXXXX XXXXXX XX XXXX  ']
 
+player_size = 56
 tile_size = 80
 screen_width = 1280
 screen_height = len(level_map1) * tile_size
