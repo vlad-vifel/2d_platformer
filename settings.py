@@ -1,43 +1,32 @@
+first_map = [
+    'XXXXX                                                   XXXXX',
+    'XXXXX        GGG                         G              XXXXX',
+    'XXXXX      XXXXXX                   P   XX              XXXXX',
+    'XGXXX P              G             XXX      GG          XXXXX',
+    'XXXXXXXXXGG         XX                     XXXX    GG   XXGXX',
+    'XXXXXXXXXXX       XXXX       G  XX         XXXX   XXXGG XXXXX',
+    'XXXXX  XXXX   GG GXX        XX             XXXX   XXXXXXXXXXX',
+    'XXXXX  XX    XXXXXXX    XX  XX           XXXGXX      XXXXXXGX',
+    'XXGXX      G XXXXXXXGG  XX  XXXX         XXXXXX        XXXXXX',
+    'XXXXX   GGXXXXX  XXXXX  XX  XXXXXXXX   XXXGXXXX    G FGXXGXXX',
+    'XXXXX  XXXXXXXX  XXXXX  XX  XXXXXXXX   XXXXXXXX   XXXXXXXXXXX']
 
-level_map10 = [
-    '                    ',
-    '                    ',
-    '                    ',
-    '                    ',
-    '                    ',
-    '                    ',
-    '                    ',
-    '                    ',
-    'XP X  X            X',
-    'XXXXXXXXXXXXXXXXXXXX']
+second_map = [
+    'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
+    'XGXXX                                XXXXX           XXXXXXXX',
+    'XXXGX     X X          XX            XXXXX              XXXXX',
+    'XXXXX                       G        XXXXX            FGXXXXX',
+    'XXGXX    XXXXX             XX        XXGXX           XXXXXXXX',
+    'XXXXX                  PG  XX        XXXXX       G   XXXXXXXX',
+    'XGXXX                GXXX            XXXXX      XXX  XXXXXXXX',
+    'XXXXX       G       XXXXX                       XXX  XXXXXXXX',
+    'XXXXX P    XX    G  XXX                     XX  XXX  XXXXXXXX',
+    'XXXGXXXXGG XX   XX                     GGG GXX  XXX  XXXXXXXX',
+    'XXXXXXXXXX      XX                 XXXXXXXXXXX  XXX  XXXXXXXX']
 
-level_map1 = [
-    'XXXXX                             ',
-    'XXXXX         G                   ',
-    'XXXXX       XXXXX           P     ',
-    'X    F    P          G     XXX    ',
-    'XXXXXXXX  X       XXXX            ',
-    'XXXXXXXXXXX       XXXX        XXXX',
-    'XXXXX  XXXX   GG  XX        G     ',
-    'XXXXX  XX    XXXXXXX       XX     ',
-    'XXX X      G XXXXXXX   XX  XXX    ',
-    'XXXXX     XXXXX XXXXXX XX  XXXX   ',
-    'XXXXX  XXXXXXXX XXXXXX XX  XXXX  X']
-
-level_map2 = [
-    'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
-    'X XXX                           ',
-    'XXX X         GG                ',
-    'XXXXXG XX P  XXXX         XX    ',
-    'XX XXXXXX           G           ',
-    'XXXXXXXXXXX        XXX       XX ',
-    'X XXX  XXXX   G  GXX       G    ',
-    'XXXXX  XX    XXXXXXX   XX XX    ',
-    'XXX X      G XX XXXX   XX XXX   ',
-    'XXXXX     XXXXX XXXXXX XX XXXX  ',
-    'XXXXX  XXXXXXXX XXXXXX XX XXXX  ']
+level_maps = [first_map, second_map]
 
 player_size = 64
 tile_size = 80
 screen_width = 1280
-screen_height = len(level_map1) * tile_size
+screen_height = len(level_maps[0]) * tile_size

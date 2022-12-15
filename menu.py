@@ -1,6 +1,4 @@
 from pygame import *
-from settings import *
-
 
 class Menu:
     def __init__(self, title_font, option_font):

@@ -16,6 +16,8 @@ pygame.mixer.music.load("music/main.mp3")
 pygame.mixer.music.set_volume(0.10)
 pygame.mixer.music.play(-1)
 
+current_level = 0
+
 
 def switch_scene(scene):
     global current_scene
@@ -51,8 +53,10 @@ def change_music_volume(vol):
         pygame.mixer.music.set_volume(0)
 
 
-def game(level_map, lives, current_checkpoint=0):
+def game(level_map, lives=3, current_checkpoint=0):
     level = Level(level_map, screen, ARIAL_50, lives, current_checkpoint)
+    global current_level
+    current_level = level_maps.index(level_map)
     running = True
     while running:
         for event in pygame.event.get():
@@ -61,14 +65,16 @@ def game(level_map, lives, current_checkpoint=0):
                 sys.exit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    print('!')
                     switch_scene(game_menu(main_menu))
 
         if level.is_falling_death:
             switch_scene(game(level_map, lives - 1, level.current_checkpoint))
 
         if level.is_finished:
-            pass
+            if current_level + 1 == len(level_maps):
+                switch_scene(game_menu(congratulations_message))
+            else:
+                switch_scene(game_menu(next_level_message))
 
         if level.gameover:
             switch_scene(game_menu(gameover_message))
@@ -81,15 +87,15 @@ def game(level_map, lives, current_checkpoint=0):
 
 main_menu = Menu(ARIAL_70, ARIAL_50)
 main_menu.append_title('2D platformer')
-main_menu.append_option('Start', lambda: game(level_map1, 3, 0))
+main_menu.append_option('Start', lambda: game(level_maps[0]))
 main_menu.append_option('Levels', lambda: game_menu(level_menu))
 main_menu.append_option('Music', lambda: game_menu(music_menu))
 main_menu.append_option('Quit', quit)
 
 level_menu = Menu(ARIAL_70, ARIAL_50)
 level_menu.append_title('Levels')
-level_menu.append_option('Level 1', lambda: game(level_map1, 3, 0))
-level_menu.append_option('Level 2', lambda: game(level_map2, 3, 0))
+for i in range(len(level_maps)):
+    level_menu.append_option('Level ' + str(i + 1), lambda: game(level_maps[i]))
 level_menu.append_option('Back', lambda: game_menu(main_menu))
 
 music_menu = Menu(ARIAL_70, ARIAL_50)
@@ -100,7 +106,17 @@ music_menu.append_option('Back', lambda: game_menu(main_menu))
 
 gameover_message = Menu(ARIAL_70, ARIAL_50)
 gameover_message.append_title('Game Over')
+gameover_message.append_option('Start again', lambda: game(level_maps[0]))
 gameover_message.append_option('Back to menu', lambda: game_menu(main_menu))
+
+next_level_message = Menu(ARIAL_70, ARIAL_50)
+next_level_message.append_title('You have passed level')
+next_level_message.append_option('Continue', lambda: game(level_maps[current_level + 1]))
+next_level_message.append_option('Back to menu', lambda: game_menu(main_menu))
+
+congratulations_message = Menu(ARIAL_70, ARIAL_50)
+congratulations_message.append_title('You won! Congratulations!')
+congratulations_message.append_option('Back to menu', lambda: game_menu(main_menu))
 
 switch_scene(game_menu(main_menu))
 while current_scene is not None:
