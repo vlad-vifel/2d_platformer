@@ -1,6 +1,7 @@
 import pygame
 from support import import_folder
 
+
 class Tile(pygame.sprite.Sprite):
     def __init__(self, pos, control):
         super().__init__()
@@ -24,7 +25,7 @@ class Tile(pygame.sprite.Sprite):
             '1010': '18.png',
         }
         self.set_tile(control)
-        self.rect = self.image.get_rect(topleft = pos)
+        self.rect = self.image.get_rect(topleft=pos)
 
     def set_tile(self, control):
         path = 'graphics/tileset/'
@@ -35,15 +36,17 @@ class Tile(pygame.sprite.Sprite):
     def update(self, x_shift):
         self.rect.x += x_shift
 
-class Grass(pygame.sprite.Sprite):
+
+class Objects(pygame.sprite.Sprite):
     def __init__(self, pos, type):
         super().__init__()
         self.grasses = ['20.png',
                         '21.png',
                         '22.png',
-                        '23.png']
+                        '30.png',
+                        '40.png']
         self.set_grass(type)
-        self.rect = self.image.get_rect(topleft = pos)
+        self.rect = self.image.get_rect(topleft=pos)
 
     def set_grass(self, type):
         path = 'graphics/tileset/'

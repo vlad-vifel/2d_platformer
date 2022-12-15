@@ -1,8 +1,7 @@
 import pygame, random
-from tiles import Tile, Grass
+from tiles import Tile, Objects
 from settings import *
 from player import Player
-
 
 class Level:
     def __init__(self, level_data, surface, font, lives, current_checkpoint):
@@ -16,21 +15,18 @@ class Level:
         self.current_checkpoint = current_checkpoint
         self.checkpoints = []
         self.player_coordinates = (0, 0)
-        self.spawn_coordinates = (0, 0)
+        self.finish_coordinates = (0, 0)
+        self.is_finished = False
         self.colliding = False
-        self.was_scrolled = 0
-        self.sum_left = 0
-        self.sum_right = 0
         self.border_left = screen_width / 4
-        self.border_right = screen_width - (screen_width / 4) - player_size - 8
+        self.border_right = screen_width - (screen_width / 4) - player_size
 
         self.setup_level(level_data)
 
     def setup_level(self, layout):
         self.tiles = pygame.sprite.Group()
-        self.grass = pygame.sprite.Group()
+        self.objects = pygame.sprite.Group()
         self.player = pygame.sprite.GroupSingle()
-        # self.enemy = pygame.sprite.Group()
 
         for row_index, row in enumerate(layout):
             for col_index, cell in enumerate(row):
@@ -43,19 +39,23 @@ class Level:
                     self.tiles.add(tile_sprite)
 
                 if cell == 'G':
-                    grass_sprite = Grass((x, y), random.randint(0,2))
-                    self.grass.add(grass_sprite)
+                    grass_sprite = Objects((x, y), random.randint(0, 2))
+                    self.objects.add(grass_sprite)
+
+                if cell == 'F':
+                    self.finish_coordinates = (x, y)
+                    finish_sprite = Objects((x, y + 20), 4)
+                    self.objects.add(finish_sprite)
 
                 if cell == 'P':
                     self.checkpoints.append((x, y))
-                    grass_sprite = Grass((x, y), 3)
-                    self.grass.add(grass_sprite)
-
+                    checkpoint_sprite = Objects((x, y), 3)
+                    self.objects.add(checkpoint_sprite)
 
         self.checkpoints = sorted(self.checkpoints, key = lambda i: (i[0], i[1]))
 
-        self.tiles.update((screen_width / 4) - self.checkpoints[self.current_checkpoint][0])
-        self.grass.update((screen_width / 4) - self.checkpoints[self.current_checkpoint][0])
+        self.tiles.update(self.border_left - self.checkpoints[self.current_checkpoint][0])
+        self.objects.update(self.border_left - self.checkpoints[self.current_checkpoint][0])
 
         x_player = self.checkpoints[self.current_checkpoint][0]
         y_player = self.checkpoints[self.current_checkpoint][1]
@@ -63,8 +63,6 @@ class Level:
 
         player_sprite = Player((self.border_left, y_player), self.player_lives)
         self.player.add(player_sprite)
-
-        print(self.checkpoints)
 
     def control_neighbours(self, layout, row_index, col_index):
         if row_index - 1 < 0 or layout[row_index - 1][col_index] == 'X':
@@ -92,7 +90,6 @@ class Level:
         player_x = player.rect.x
         direction_x = player.direction.x
 
-
         if player_x < self.border_left and direction_x < 0:
             self.world_shift = 8
             player.speed = 0
@@ -103,7 +100,6 @@ class Level:
             else:
                 x_global = self.player_coordinates[0]
 
-
         elif player_x > self.border_right and direction_x > 0:
             self.world_shift = -8
             player.speed = 0
@@ -113,8 +109,6 @@ class Level:
             else:
                 x_global = self.player_coordinates[0]
 
-
-
         else:
             self.world_shift = 0
             player.speed = 8
@@ -123,7 +117,6 @@ class Level:
 
             else:
                 x_global = self.player_coordinates[0]
-
 
         y_global = player.rect.y
         self.player_coordinates = (x_global, y_global)
@@ -146,8 +139,6 @@ class Level:
             self.colliding = True
         else:
             self.colliding = False
-
-
 
     def vertical_movement_collision(self):
         player = self.player.sprite
@@ -172,20 +163,26 @@ class Level:
         x_player = self.player_coordinates[0]
         y_player = self.player_coordinates[1]
 
-        print(self.player_coordinates)
-
         for i in range(self.current_checkpoint + 1, len(self.checkpoints)):
             x_checkpoint = self.checkpoints[i][0]
             y_checkpoint = self.checkpoints[i][1]
 
-
             if x_checkpoint - player_size < x_player < x_checkpoint + tile_size and y_checkpoint < y_player < y_checkpoint + tile_size:
-                print('!')
                 self.current_checkpoint = i
+
+    def check_finish(self):
+        x_player = self.player_coordinates[0]
+        y_player = self.player_coordinates[1]
+
+        x_finish = self.finish_coordinates[0]
+        y_finish = self.finish_coordinates[1]
+        if x_finish - player_size < x_player < x_finish + tile_size and y_finish < y_player < y_finish + tile_size:
+            self.is_finished = True
+        else:
+            self.is_finished = False
 
     def falling_death(self):
         player = self.player.sprite
-
         if player.rect.y > screen_height + tile_size * 6:
             return True
         else:
@@ -198,19 +195,18 @@ class Level:
         surf.blit(lives, lives_rect)
 
     def run(self):
-
         # level tiles
         self.tiles.draw(self.display_surface)
         self.scroll_x()
         self.tiles.update(self.world_shift)
 
         # level grass
-        self.grass.draw(self.display_surface)
-        self.grass.update(self.world_shift)
+        self.objects.draw(self.display_surface)
+        self.objects.update(self.world_shift)
         self.scroll_x()
 
         self.set_checkpoint()
-
+        self.check_finish()
 
         # player
         self.gameover = self.player.sprite.get_death()
@@ -222,5 +218,3 @@ class Level:
         self.player.draw(self.display_surface)
 
         self.show_lives(self.display_surface)
-
-        # pygame.draw.rect(self.display_surface, pygame.color.THECOLORS['black'], ((screen_width / 4), 0, screen_width - 2*(screen_width / 4), screen_height), 1)

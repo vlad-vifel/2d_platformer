@@ -15,7 +15,7 @@ level_map1 = [
     'XXXXX                             ',
     'XXXXX         G                   ',
     'XXXXX       XXXXX           P     ',
-    'X     P   P          G     XXX    ',
+    'X    F    P          G     XXX    ',
     'XXXXXXXX  X       XXXX            ',
     'XXXXXXXXXXX       XXXX        XXXX',
     'XXXXX  XXXX   GG  XX        G     ',
@@ -37,7 +37,7 @@ level_map2 = [
     'XXXXX     XXXXX XXXXXX XX XXXX  ',
     'XXXXX  XXXXXXXX XXXXXX XX XXXX  ']
 
-player_size = 56
+player_size = 64
 tile_size = 80
 screen_width = 1280
 screen_height = len(level_map1) * tile_size
