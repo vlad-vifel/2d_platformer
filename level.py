@@ -5,6 +5,14 @@ from player import Player
 
 class Level:
     def __init__(self, level_data, surface, font, lives, current_checkpoint):
+        '''
+        Инициализация карты
+        :param level_data: информация о левеле (карта)
+        :param surface:
+        :param font: шрифт
+        :param lives: количество жизней
+        :param current_checkpoint: на каком чекпоинте игрок в данный момент
+        '''
         self.display_surface = surface
         self.world_shift = 0
         self.on_ground = True
@@ -20,21 +28,29 @@ class Level:
         self.colliding = False
         self.border_left = screen_width / 4
         self.border_right = screen_width - (screen_width / 4) - player_size
+        self.level_data = level_data
 
-        self.setup_level(level_data)
+        self.setup_level()
 
-    def setup_level(self, layout):
+    def setup_level(self):
+        '''
+        Функция настройки уровня. Придает определенным обозначениям их значения:
+        X - обычный блок
+        G - трава
+        F - дверь, являющаяся концом уровня
+        P - спавн игрока (чекпоинты)
+        '''
         self.tiles = pygame.sprite.Group()
         self.objects = pygame.sprite.Group()
         self.player = pygame.sprite.GroupSingle()
 
-        for row_index, row in enumerate(layout):
+        for row_index, row in enumerate(self.level_data):
             for col_index, cell in enumerate(row):
                 x = col_index * tile_size
                 y = row_index * tile_size
 
                 if cell == 'X':
-                    control = self.control_neighbours(layout, row_index, col_index)
+                    control = self.control_neighbours(self.level_data, row_index, col_index)
                     tile_sprite = Tile((x,y), control)
                     self.tiles.add(tile_sprite)
 
@@ -65,6 +81,13 @@ class Level:
         self.player.add(player_sprite)
 
     def control_neighbours(self, layout, row_index, col_index):
+        '''
+        Функция
+        :param layout:
+        :param row_index:
+        :param col_index:
+        :return:
+        '''
         if row_index - 1 < 0 or layout[row_index - 1][col_index] == 'X':
             b_up = '1'
         else:
@@ -86,6 +109,9 @@ class Level:
 
 
     def scroll_x(self):
+        '''
+        Функция движения экрана влево вапрво в зависимости от движения игрока
+        '''
         player = self.player.sprite
         player_x = player.rect.x
         direction_x = player.direction.x
@@ -122,6 +148,9 @@ class Level:
         self.player_coordinates = (x_global, y_global)
 
     def horizontal_movement_collision(self):
+        '''
+        Функция проверки столкновения игрока с тайлами карты по горизонтали (слева и справа)
+        '''
         player = self.player.sprite
         player.rect.x += player.direction.x * player.speed
 
@@ -141,6 +170,9 @@ class Level:
             self.colliding = False
 
     def vertical_movement_collision(self):
+        '''
+        Функция проверки столкновения игрока с тайлами карты по вертикали (пол, потолок)
+        '''
         player = self.player.sprite
         player.apply_gravity()
 
@@ -160,6 +192,9 @@ class Level:
             player.on_ceiling = False
 
     def set_checkpoint(self):
+        '''
+        Функция установки нужного чекпоинта, в случае преодоления его
+        '''
         x_player = self.player_coordinates[0]
         y_player = self.player_coordinates[1]
 
@@ -171,6 +206,9 @@ class Level:
                 self.current_checkpoint = i
 
     def check_finish(self):
+        '''
+        Функция проверки завершения прохождения уровня
+        '''
         x_player = self.player_coordinates[0]
         y_player = self.player_coordinates[1]
 
@@ -182,6 +220,10 @@ class Level:
             self.is_finished = False
 
     def falling_death(self):
+        '''
+        Функция смерти игрока от падения в пропость
+        :return: Возвращает True, если игрок упал в пропость. В остальных случаях False
+        '''
         player = self.player.sprite
         if player.rect.y > screen_height + tile_size * 6:
             return True
@@ -189,12 +231,21 @@ class Level:
             return False
 
     def show_lives(self, surf):
+        '''
+        Функция отображения количество жизней
+        :param surf: координаты отображения надписи Lives
+        :return: надпись Lives: и количество оставшихся жизней
+        '''
+
         lives = self.font.render("Lives: " + str(self.player_lives), True, (255, 255, 255))
         lives_rect = lives.get_rect()
         lives_rect.topleft = (10, 10)
         surf.blit(lives, lives_rect)
 
     def run(self):
+        '''
+        Функция запуска всех функций данного класса
+        '''
         # level tiles
         self.tiles.draw(self.display_surface)
         self.scroll_x()

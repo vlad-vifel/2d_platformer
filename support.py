@@ -1,6 +1,7 @@
 from os import walk
 import pygame
 
+'''Заимствование кода, код взят с https://github.com/clear-code-projects/2D-Mario-style-platformer'''
 def import_folder(path):
     surface_list = []
 
@@ -12,3 +13,4 @@ def import_folder(path):
             surface_list.append(image_surf)
 
     return surface_list
+'''Конец заимствования кода'''

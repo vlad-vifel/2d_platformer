@@ -3,10 +3,11 @@ from support import import_folder
 class Player(pygame.sprite.Sprite):
 
     def __init__(self, pos: list, lives):
-        """ Инициализация игрока
-
-        :param pos (list): начальные координаты игрока
-        """
+        '''
+        Инициализация игрока
+        :param pos: координаты
+        :param lives: количество жизней
+        '''
         super().__init__()
         self.import_character_assets()
         self.frame_index = 0
@@ -27,6 +28,10 @@ class Player(pygame.sprite.Sprite):
         self.moving = False
 
     def import_character_assets(self):
+        '''
+        Функция выводит ассеты персонажа, с помощью функции import_folder,
+        в зависимости от действия
+        '''
         character_path = 'graphics/character0/'
         self.animations = {'idle': list, 'run': list, 'jump': list, 'fall': list}
 
@@ -35,6 +40,10 @@ class Player(pygame.sprite.Sprite):
             self.animations[animation] = import_folder(full_path)
 
     def animate(self):
+        '''
+        Функция бегает по картинкам в определенной папке, создавая анимацию действий персонажа
+        Так же зеркально отражает картинки в случае движения влево
+        '''
         animation = self.animations[self.status]
         self.frame_index += self.animation_speed
         if self.frame_index >= len(animation):
@@ -55,6 +64,12 @@ class Player(pygame.sprite.Sprite):
             self.rect = self.image.get_rect(center = self.rect.center)
 
     def get_input(self):
+        '''
+        Проверяет какую кнопку нажали на клавиатуре и в соответствии с этим двигает персонажа
+        Стрелочка вправо - движение впарво
+        Стрелочка влево - движение влево
+        Стрелочка вверх - прыжок
+        '''
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_RIGHT]:
@@ -74,6 +89,9 @@ class Player(pygame.sprite.Sprite):
                 self.jump()
 
     def get_status(self):
+        '''
+        Изменяет значение self.status в зависимости от действия (прыжок, падение, бег, стояние на месте)
+        '''
         if self.direction.y < 0:
             self.status = 'jump'
         elif self.direction.y > 1:
@@ -85,19 +103,36 @@ class Player(pygame.sprite.Sprite):
                 self.status = 'idle'
 
     def apply_gravity(self):
+        '''
+        Функция гравитации, добавляет гравитацию (притяжение вниз к блокам)
+        '''
         self.direction.y += self.gravity
         self.rect.y += self.direction.y
 
     def jump(self):
+        '''
+        Функция прыжка, добавляет значение self.jump_speed к координате по вертикальной оси
+        '''
         self.direction.y = self.jump_speed
 
     def get_death(self):
+        '''
+        Функция смерти проверяет количество жизней.
+        :return:  В случае если жизней 0 или меньше возвращает True, В других случаях - False
+        '''
         return True if self.lives <= 0 else False
 
     def get_lives(self):
+        '''
+        Функция обращается к количеству жизней
+        :return: self.lives - Количество жизней
+        '''
         return self.lives
 
     def update(self):
+        '''
+        Ежесекундно вызывает функции self.get_input(), self.get_status(), self.animate
+        '''
         self.get_input()
         self.get_status()
         self.animate()

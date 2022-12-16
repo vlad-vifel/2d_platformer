@@ -24,7 +24,21 @@ second_map = [
     'XXXGXXXXGG XX   XX                     GGG GXX  XXX  XXXXXXXX',
     'XXXXXXXXXX      XX                 XXXXXXXXXXX  XXX  XXXXXXXX']
 
-level_maps = [first_map, second_map]
+third_map = [
+    'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
+    'XXXXX                         XX    XXXXXXX     XXXXX    XXXXX',
+    'XXXXX                         XX                         XXXXX',
+    'XXXXX                    G  G XX                         XXXXX',
+    'XXXXX      XXX    XXX    XXXXXXX                         XXXXX',
+    'XXXXX  P                      XX                   XX    XXXXX',
+    'XXXXXXXXXX                                 XXX    XXXX   XXXXX',
+    'XXXXXXXXXX              GG GG         P           XXX    XXXXX',
+    'XXXXX                   XX XX X  X    XXX         XXX    XXXXX',
+    'XXXXX    XXX                                      XXXF   XXXXX',
+    'XXXXXXXXXX      XXXX                         XX   XXXX   XXXXX']
+
+
+level_maps = [first_map, second_map, third_map]
 
 player_size = 64
 tile_size = 80

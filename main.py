@@ -20,11 +20,20 @@ current_level = 0
 
 
 def switch_scene(scene):
+    '''
+    Функция смены отображаемого на экране
+    :param scene:
+    :return:
+    '''
     global current_scene
     current_scene = scene
 
 
 def game_menu(menu):
+    '''
+    Функция создания меню
+    :param menu: класс Меню
+    '''
     running = True
     while running:
         for event in pygame.event.get():
@@ -44,6 +53,10 @@ def game_menu(menu):
 
 
 def change_music_volume(vol):
+    '''
+    Функция изменения громкости звука
+    :param vol: значения на которое изменяется звук за нажатие
+    '''
     volume = pygame.mixer.music.get_volume() + vol
     if 0 <= volume <= 1:
         pygame.mixer.music.unpause()
@@ -54,6 +67,12 @@ def change_music_volume(vol):
 
 
 def game(level_map, lives=3, current_checkpoint=0):
+    '''
+    Функция игры, открытие нужного уровня
+    :param level_map: нужный левел
+    :param lives: количество жизней
+    :param current_checkpoint: место спауна
+    '''
     level = Level(level_map, screen, ARIAL_50, lives, current_checkpoint)
     global current_level
     current_level = level_maps.index(level_map)
