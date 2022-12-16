@@ -1,5 +1,6 @@
 import pygame
 from level import Level
+from player import Player
 
 pygame.init()
 pygame.font.init()
@@ -27,16 +28,15 @@ test_level2 = Level(test_map2, test_screen, ARIAL_50, 3, 0)
 test_level3 = Level(test_map3, test_screen, ARIAL_50, 3, 0)
 test_level4 = Level(test_map4, test_screen, ARIAL_50, 3, 0)
 test_level5 = Level(test_map5, test_screen, ARIAL_50, 3, 0)
+player = Player((0, 0), 1)
 
-
+# Test functions from class Level
 def test_control_neighbours1():
-    res = test_level.control_neighbours(test_map, 1, 1)
-    assert res == '1101'
+    assert test_level.control_neighbours(test_map, 1, 1) == '1101'
 
 
 def test_control_neighbours2():
-    res = test_level.control_neighbours(test_map, 0, 2)
-    assert res == '1111'
+    assert test_level.control_neighbours(test_map, 0, 2) == '1111'
 
 
 def test_horizontal_movement_collision1():
@@ -77,8 +77,41 @@ def test_falling_death():
     test_level4.player_coordinates = (x_player, y_player)
     assert test_level4.falling_death() == False
 
+def test_falling_death():
+    assert test_level.falling_death() == False
 
+def test_falling_death1():
+    x_player = test_level4.player_coordinates[0]
+    y_player = test_level4.player_coordinates[1] + 1000
+    test_level4.player_coordinates = (x_player, y_player)
+    player.rect.y = y_player
+    assert test_level4.falling_death() == True
+
+# Test functions from class Player
 def test_get_status():
-    player.sprite.direction.x = 0
+    player.direction.x = 0
+    player.get_status()
+    assert player.status == 'idle'
+
+def test_get_status2():
+    player.direction.x = 1
     player.get_status()
     assert player.status == 'run'
+
+def test_get_status3():
+    player.direction.y = -2
+    player.get_status()
+    assert player.status == 'jump'
+
+def test_get_status4():
+    player.direction.y = 2
+    player.get_status()
+    assert player.status == 'fall'
+
+def test_get_death():
+    player.lives = 0
+    assert player.get_death() == True
+
+def test_get_death2():
+    player.lives = 3
+    assert player.get_death() == False
