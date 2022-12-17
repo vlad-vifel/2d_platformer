@@ -6,12 +6,12 @@ from player import Player
 class Level:
     def __init__(self, level_data, surface, font, lives, current_checkpoint):
         '''
-        Инициализация карты
+        Инициализация уровня
         :param level_data: информация о левеле (карта)
-        :param surface:
+        :param surface: поверхность отрисовки уровня
         :param font: шрифт
         :param lives: количество жизней
-        :param current_checkpoint: на каком чекпоинте игрок в данный момент
+        :param current_checkpoint: текущий чекпоинт (спавн) игрока
         '''
         self.display_surface = surface
         self.world_shift = 0
@@ -34,8 +34,8 @@ class Level:
 
     def setup_level(self):
         '''
-        Функция настройки уровня. Придает определенным обозначениям их значения:
-        X - обычный блок
+        Функция настройки карты уровня. Создает карту. Спавнит игрока, сдвигая мир на четверть ширины экрана до спавна:
+        X - тайл
         G - трава
         F - дверь, являющаяся концом уровня
         P - спавн игрока (чекпоинты)
@@ -82,11 +82,11 @@ class Level:
 
     def control_neighbours(self, layout, row_index, col_index):
         '''
-        Функция
-        :param layout:
-        :param row_index:
-        :param col_index:
-        :return:
+        Функция, которая проверяет наличие тайлов сверху, снизу, слева и справа от данного тайла
+        :param layout: поверхность уровня
+        :param row_index: ряд тайла
+        :param col_index: столбец тайла
+        :return: строка, состоящая из нулей или единиц (0 - тайл в данном направлении отсутствует, 1 - тайл в данном направлении присутсвует), направления - верх, низ, лево, право. Если блока не существует в каком-либо направлении, значени данного направления равно единице.
         '''
         if row_index - 1 < 0 or layout[row_index - 1][col_index] == 'X':
             b_up = '1'
@@ -105,12 +105,13 @@ class Level:
         else:
             b_right = '0'
 
-        return b_up + b_down + b_left + b_right
+        control = b_up + b_down + b_left + b_right
+        return control
 
 
     def scroll_x(self):
         '''
-        Функция движения экрана влево вапрво в зависимости от движения игрока
+        Функция движения либо экрана (в первой и четвертой четвертях экрана, игрок при этом не двигается), либо игрока (во второй и третьей четвертях экрана).
         '''
         player = self.player.sprite
         player_x = player.rect.x
@@ -207,7 +208,7 @@ class Level:
 
     def check_finish(self):
         '''
-        Функция проверки завершения прохождения уровня
+        Функция проверки завершения прохождения уровня, в случае преодоления финиша (дверь)
         '''
         x_player = self.player_coordinates[0]
         y_player = self.player_coordinates[1]
@@ -230,42 +231,41 @@ class Level:
         else:
             return False
 
-    def show_lives(self, surf):
+    def show_lives(self):
         '''
-        Функция отображения количество жизней
-        :param surf: координаты отображения надписи Lives
-        :return: надпись Lives: и количество оставшихся жизней
+        Функция отображения количество жизней (отрисовывает на экране надпись Lives: и количество оставшихся жизней)
         '''
 
         lives = self.font.render("Lives: " + str(self.player_lives), True, (255, 255, 255))
         lives_rect = lives.get_rect()
         lives_rect.topleft = (10, 10)
-        surf.blit(lives, lives_rect)
+        self.display_surface.blit(lives, lives_rect)
 
     def run(self):
         '''
-        Функция запуска всех функций данного класса
+        Функция запуска уровня
         '''
-        # level tiles
+        # тайлы
         self.tiles.draw(self.display_surface)
         self.scroll_x()
         self.tiles.update(self.world_shift)
 
-        # level grass
+        # трава
         self.objects.draw(self.display_surface)
         self.objects.update(self.world_shift)
         self.scroll_x()
 
+        # проверка чекпоинтов и финиша
         self.set_checkpoint()
         self.check_finish()
 
-        # player
+        # игрок
         self.gameover = self.player.sprite.get_death()
         self.is_falling_death = self.falling_death()
-
         self.player.update()
         self.horizontal_movement_collision()
         self.vertical_movement_collision()
         self.player.draw(self.display_surface)
 
-        self.show_lives(self.display_surface)
+        # отрисовка
+        self.show_lives()

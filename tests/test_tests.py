@@ -30,7 +30,7 @@ test_level4 = Level(test_map4, test_screen, ARIAL_50, 3, 0)
 test_level5 = Level(test_map5, test_screen, ARIAL_50, 3, 0)
 player = Player((0, 0), 1)
 
-# Test functions from class Level
+# Проверка функция класса Level
 def test_control_neighbours1():
     assert test_level.control_neighbours(test_map, 1, 1) == '1101'
 
@@ -81,7 +81,7 @@ def test_falling_death1():
     test_level4.falling_death()
     assert test_level4.falling_death() == True
 
-# Test functions from class Player
+# Проверка функция класса Player
 def test_get_status():
     player.direction.x = 0
     player.get_status()

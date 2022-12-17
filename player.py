@@ -2,7 +2,7 @@ import pygame
 from support import import_folder
 class Player(pygame.sprite.Sprite):
 
-    def __init__(self, pos: list, lives):
+    def __init__(self, pos, lives):
         '''
         Инициализация игрока
         :param pos: координаты
@@ -29,8 +29,7 @@ class Player(pygame.sprite.Sprite):
 
     def import_character_assets(self):
         '''
-        Функция выводит ассеты персонажа, с помощью функции import_folder,
-        в зависимости от действия
+        Функция испортирует ассеты игрока, в соответствующие списки (по типу действия игрока)
         '''
         character_path = 'graphics/character0/'
         self.animations = {'idle': list, 'run': list, 'jump': list, 'fall': list}
@@ -41,7 +40,7 @@ class Player(pygame.sprite.Sprite):
 
     def animate(self):
         '''
-        Функция бегает по картинкам в определенной папке, создавая анимацию действий персонажа
+        Функция перебирает изображения в определенном списке, создавая анимацию действий персонажа
         Так же зеркально отражает картинки в случае движения влево
         '''
         animation = self.animations[self.status]
@@ -65,7 +64,7 @@ class Player(pygame.sprite.Sprite):
 
     def get_input(self):
         '''
-        Проверяет какую кнопку нажали на клавиатуре и в соответствии с этим двигает персонажа
+        Проверяет, какая кнопка нажата на клавиатуре, и в соответствии с этим задает значения направлениям по x и y игрока
         Стрелочка вправо - движение впарво
         Стрелочка влево - движение влево
         Стрелочка вверх - прыжок
@@ -104,7 +103,7 @@ class Player(pygame.sprite.Sprite):
 
     def apply_gravity(self):
         '''
-        Функция гравитации, добавляет гравитацию (притяжение вниз к блокам)
+        Функция гравитации, добавляет гравитацию (силу притяжения)
         '''
         self.direction.y += self.gravity
         self.rect.y += self.direction.y
@@ -118,20 +117,20 @@ class Player(pygame.sprite.Sprite):
     def get_death(self):
         '''
         Функция смерти проверяет количество жизней.
-        :return:  В случае если жизней 0 или меньше возвращает True, В других случаях - False
+        :return:  В случае если количество жизней меньше или равно нулю возвращает True, в остальных случаях - False
         '''
         return True if self.lives <= 0 else False
 
     def get_lives(self):
         '''
-        Функция обращается к количеству жизней
-        :return: self.lives - Количество жизней
+        Функция возвращения количества жизней
+        :return: количество жизней
         '''
         return self.lives
 
     def update(self):
         '''
-        Ежесекундно вызывает функции self.get_input(), self.get_status(), self.animate
+        Функция обновления игрока
         '''
         self.get_input()
         self.get_status()

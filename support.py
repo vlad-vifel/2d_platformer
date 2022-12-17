@@ -3,6 +3,11 @@ import pygame
 
 '''Заимствование кода, код взят с https://github.com/clear-code-projects/2D-Mario-style-platformer'''
 def import_folder(path):
+    '''
+    Функция конвертации папки изображений в список путей до изображений папки
+    :param path: путь до папки
+    :return: список путей до изображений папки
+    '''
     surface_list = []
 
     for _,__,img_files in walk(path):
