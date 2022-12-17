@@ -198,13 +198,14 @@ class Level:
         '''
         x_player = self.player_coordinates[0]
         y_player = self.player_coordinates[1]
-
+        current_checkpoint = self.current_checkpoint
         for i in range(self.current_checkpoint + 1, len(self.checkpoints)):
             x_checkpoint = self.checkpoints[i][0]
             y_checkpoint = self.checkpoints[i][1]
 
             if x_checkpoint - player_size < x_player < x_checkpoint + tile_size and y_checkpoint < y_player < y_checkpoint + tile_size:
-                self.current_checkpoint = i
+                current_checkpoint = i
+        return current_checkpoint
 
     def check_finish(self):
         '''
@@ -216,9 +217,9 @@ class Level:
         x_finish = self.finish_coordinates[0]
         y_finish = self.finish_coordinates[1]
         if x_finish - player_size < x_player < x_finish + tile_size and y_finish < y_player < y_finish + tile_size:
-            self.is_finished = True
+            return True
         else:
-            self.is_finished = False
+            return False
 
     def falling_death(self):
         '''
@@ -250,18 +251,16 @@ class Level:
         self.scroll_x()
         self.tiles.update(self.world_shift)
 
-        # трава
+        # объекты
         self.objects.draw(self.display_surface)
         self.objects.update(self.world_shift)
         self.scroll_x()
 
-        # проверка чекпоинтов и финиша
-        self.set_checkpoint()
-        self.check_finish()
-
         # игрок
         self.gameover = self.player.sprite.get_death()
         self.is_falling_death = self.falling_death()
+        self.current_checkpoint = self.set_checkpoint()
+        self.is_finished = self.check_finish()
         self.player.update()
         self.horizontal_movement_collision()
         self.vertical_movement_collision()
