@@ -70,13 +70,6 @@ def test_check_finish():
     test_level5.check_finish()
     assert test_level5.is_finished == True
 
-
-def test_falling_death():
-    x_player = test_level4.player_coordinates[0]
-    y_player = test_level4.player_coordinates[1]
-    test_level4.player_coordinates = (x_player, y_player)
-    assert test_level4.falling_death() == False
-
 def test_falling_death():
     assert test_level.falling_death() == False
 
@@ -85,6 +78,7 @@ def test_falling_death1():
     y_player = test_level4.player_coordinates[1] + 1000
     test_level4.player_coordinates = (x_player, y_player)
     player.rect.y = y_player
+    test_level4.falling_death()
     assert test_level4.falling_death() == True
 
 # Test functions from class Player
