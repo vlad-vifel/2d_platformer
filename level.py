@@ -54,16 +54,16 @@ class Level:
                     tile_sprite = Tile((x,y), control)
                     self.tiles.add(tile_sprite)
 
-                if cell == 'G':
+                elif cell == 'G':
                     grass_sprite = Objects((x, y), random.randint(0, 2))
                     self.objects.add(grass_sprite)
 
-                if cell == 'F':
+                elif cell == 'F':
                     self.finish_coordinates = (x, y)
                     finish_sprite = Objects((x, y + 20), 4)
                     self.objects.add(finish_sprite)
 
-                if cell == 'P':
+                elif cell == 'P':
                     self.checkpoints.append((x, y))
                     checkpoint_sprite = Objects((x, y), 3)
                     self.objects.add(checkpoint_sprite)
@@ -195,6 +195,7 @@ class Level:
     def set_checkpoint(self):
         '''
         Функция установки нужного чекпоинта, в случае преодоления его
+        :return: Возвращает номер текущего чекпоинта
         '''
         x_player = self.player_coordinates[0]
         y_player = self.player_coordinates[1]
@@ -210,6 +211,7 @@ class Level:
     def check_finish(self):
         '''
         Функция проверки завершения прохождения уровня, в случае преодоления финиша (дверь)
+        :return: Возвращает True, если игрок находится в финише (дверь). В остальных случаях False
         '''
         x_player = self.player_coordinates[0]
         y_player = self.player_coordinates[1]

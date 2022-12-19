@@ -32,11 +32,13 @@ player = Player((0, 0), 1)
 
 
 # Проверка функция класса Level
-def test_control_neighbours1():
+def test_control_neighbours():
     assert test_level.control_neighbours(test_map, 1, 1) == '1101'
 
-
 def test_control_neighbours2():
+    assert test_level.control_neighbours(test_map, -1, -1) == '1111'
+
+def test_control_neighbours3():
     assert test_level.control_neighbours(test_map, 0, 2) == '1111'
 
 
@@ -70,7 +72,7 @@ def test_falling_death():
     assert test_level.falling_death() == False
 
 
-def test_falling_death1():
+def test_falling_death2():
     test_level4.player.sprite.rect.y = test_level4.player_coordinates[1] + 10000
     assert test_level4.falling_death() == True
 
@@ -89,12 +91,18 @@ def test_get_status2():
 
 
 def test_get_status3():
+    player.direction.x = -1
+    player.get_status()
+    assert player.status == 'run'
+
+
+def test_get_status4():
     player.direction.y = -2
     player.get_status()
     assert player.status == 'jump'
 
 
-def test_get_status4():
+def test_get_status5():
     player.direction.y = 2
     player.get_status()
     assert player.status == 'fall'
